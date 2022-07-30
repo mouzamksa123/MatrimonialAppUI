@@ -1,104 +1,50 @@
 import { NgModule } from '@angular/core';
-import { HashLocationStrategy, LocationStrategy, PathLocationStrategy } from '@angular/common';
-import { BrowserModule, Title } from '@angular/platform-browser';
+import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ExtraOptions, PreloadAllModules, RouterModule } from '@angular/router';
+import { MarkdownModule } from 'ngx-markdown';
+import { FuseModule } from '@fuse';
+import { FuseConfigModule } from '@fuse/services/config';
+import { FuseMockApiModule } from '@fuse/lib/mock-api';
+import { CoreModule } from 'app/core/core.module';
+import { appConfig } from 'app/core/config/app.config';
+import { mockApiServices } from 'app/mock-api';
+import { LayoutModule } from 'app/layout/layout.module';
+import { AppComponent } from 'app/app.component';
+import { appRoutes } from 'app/app.routing';
 
-import {
-  PERFECT_SCROLLBAR_CONFIG,
-  PerfectScrollbarConfigInterface,
-  PerfectScrollbarModule,
-} from 'ngx-perfect-scrollbar';
-
-// Import routing module
-import { AppRoutingModule } from './app-routing.module';
-
-// Import app component
-import { AppComponent } from './app.component';
-
-// Import containers
-import {
-  DefaultFooterComponent,
-  DefaultHeaderComponent,
-  DefaultLayoutComponent,
-} from './containers';
-
-import {
-  AvatarModule,
-  BadgeModule,
-  BreadcrumbModule,
-  ButtonGroupModule,
-  ButtonModule,
-  CardModule,
-  DropdownModule,
-  FooterModule,
-  FormModule,
-  GridModule,
-  HeaderModule,
-  ListGroupModule,
-  NavModule,
-  ProgressModule,
-  SharedModule,
-  SidebarModule,
-  TabsModule,
-  UtilitiesModule,
-} from '@coreui/angular';
-
-import { IconModule, IconSetService } from '@coreui/icons-angular';
-
-const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
-  suppressScrollX: true,
+const routerConfig: ExtraOptions = {
+    preloadingStrategy       : PreloadAllModules,
+    scrollPositionRestoration: 'enabled'
 };
 
-const APP_CONTAINERS = [
-  DefaultFooterComponent,
-  DefaultHeaderComponent,
-  DefaultLayoutComponent,
-];
-
 @NgModule({
-  declarations: [AppComponent, ...APP_CONTAINERS],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    AppRoutingModule,
-    AvatarModule,
-    BreadcrumbModule,
-    FooterModule,
-    DropdownModule,
-    GridModule,
-    HeaderModule,
-    SidebarModule,
-    IconModule,
-    PerfectScrollbarModule,
-    NavModule,
-    ButtonModule,
-    FormModule,
-    UtilitiesModule,
-    ButtonGroupModule,
-    ReactiveFormsModule,
-    SidebarModule,
-    SharedModule,
-    TabsModule,
-    ListGroupModule,
-    ProgressModule,
-    BadgeModule,
-    ListGroupModule,
-    CardModule,
-  ],
-  providers: [
-    {
-      provide: LocationStrategy,
-      useClass: HashLocationStrategy,
-    },
-    {
-      provide: PERFECT_SCROLLBAR_CONFIG,
-      useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG,
-    },
-    IconSetService,
-    Title
-  ],
-  bootstrap: [AppComponent],
+    declarations: [
+        AppComponent
+    ],
+    imports     : [
+        BrowserModule,
+        BrowserAnimationsModule,
+        RouterModule.forRoot(appRoutes, routerConfig),
+
+        // Fuse, FuseConfig & FuseMockAPI
+        FuseModule,
+        FuseConfigModule.forRoot(appConfig),
+        FuseMockApiModule.forRoot(mockApiServices),
+
+        // Core module of your application
+        CoreModule,
+
+        // Layout module of your application
+        LayoutModule,
+
+        // 3rd party modules that require global configuration via forRoot
+        MarkdownModule.forRoot({})
+    ],
+    bootstrap   : [
+        AppComponent
+    ]
 })
-export class AppModule {
+export class AppModule
+{
 }
